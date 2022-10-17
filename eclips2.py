@@ -13,7 +13,7 @@ if dev is None:
 # configuration will be the active one
 dev.set_configuration()
 
-def cmd(cmd):
+def eclips2_cmd(cmd):
     # kinda test mode - laser pointer is on, but offset from where it would cut
     #if cmd.startswith("PD"):
     #    cmd = "PU" + cmd[2:]
@@ -21,27 +21,23 @@ def cmd(cmd):
     dev.write(0x02, cmd)
     dev.read(0x82, 1)
 
-# init?
-cmd(";:H A L0 ECN U P1;US8;")
+def eclips2_init():
+    # init?
+    eclips2_cmd(";:H A L0 ECN U P1;US8;")
 
-print("Get ready for loading mat")
-input()
+    print("Get ready for loading mat")
+    input()
 
-cmd("US5;")
-cmd("PU1344,0;")
-cmd("US6;")
-cmd("PU2368,0;")
-cmd("PU320,0;")
+    eclips2_cmd("US5;")
+    eclips2_cmd("PU600,0;")
+    eclips2_cmd("!PG;")
 
-time.sleep(3)
+    input()
 
-cmd("US7;")
+    eclips2_cmd(";:H A L0 ECN U P1;US8;")
+    eclips2_cmd("US7;")
 
-with open("program.hpgl", "r") as file:
-    program = file.read().split(";")
-
-for entry in program:
-    cmd(entry + ";")
-
-# "done"?
-cmd("!PG;")
+def eclips2_end():
+    # "done"?
+    eclips2_cmd("PU;")
+    eclips2_cmd("!PG;")
